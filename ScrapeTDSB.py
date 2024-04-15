@@ -58,6 +58,7 @@ def school_extract(school_URLs):
         principal_email = '.'.join(name_parts).lower() + '@tdsb.on.ca'
         print(principal_email)
 
+
         #Get Vice Principal's name:
         # Find the span tag with the specific id
         vp_element = soup.find('span', id="dnn_ctr2796_ViewSPC_ctl00_lblVicePrincipals")
@@ -73,14 +74,26 @@ def school_extract(school_URLs):
             # Create emails for the vice-principals
             vp_emails = ['.'.join(name.split()).lower() + '@tdsb.on.ca' if name else None for name in vp_names]
 
-             # Append the data (replace the placeholders with actual values)
-            data.append([school_name, email, principal_name] + vp_names + vp_emails)
         else:
             print("Vice-Principals' names not found")
 
+        # # Get Salutation:
+        # vp_names_str = ', '.join([f'Vice-Principal {name}' for name in vp_names if name])  # Create a single string of VP names
+        # Salutation = f"Dear Principal {principal_name}, {vp_names_str}, and Staff of {school_name}" if vp_names_str else f"Dear Principal {principal_name} and Staff of {school_name}"
+
+        # Get Last Names:
+        vp_last_names_str = ', '.join([f'Vice-Principal {name.split()[-1]}' for name in vp_names if name])  # Create a single string of VP last names
+        principal_last_name = principal_name.split()[-1] if principal_name else ""
+        # Get Salutation:
+        Salutation = f"Dear Principal {principal_last_name}, {vp_last_names_str}, and Staff of {school_name}," if vp_last_names_str else f"Dear Principal {principal_last_name} and Staff of {school_name},"
+
+        # Append the data (replace the placeholders with actual values)
+        data.append([Salutation, school_name, email, principal_name, principal_email] + vp_names + vp_emails)
+
+
         # Create a DataFrame and export to Excel
-        df = pd.DataFrame(data, columns=["School Name", "School Email", "Principal Name", "VP1 Name", "VP2 Name", "VP3 Name", "VP4 Name", "VP1 Email", "VP2 Email", "VP3 Email", "VP4 Email"])
-        df.to_excel("TDSB-HighSchool-List.xlsx", index=False)
+        df = pd.DataFrame(data, columns=["Salutation","School Name", "School Email", "Principal Name", "principal_email","VP1 Name", "VP2 Name", "VP3 Name", "VP4 Name", "VP1 Email", "VP2 Email", "VP3 Email", "VP4 Email"])
+        df.to_excel("TDSB-HighSchool-List1.xlsx", index=False)
 
 #Send into "school_extract" the list of all school URLs to extract info
 school_extract(full_urls)
