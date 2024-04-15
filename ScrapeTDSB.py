@@ -90,6 +90,14 @@ def school_extract(school_URLs):
         # Append the data (replace the placeholders with actual values)
         data.append([Salutation, school_name, email, principal_name, principal_email] + vp_names + vp_emails)
 
+        # Clear or reset the variables before the next record
+        Salutation = ""
+        school_name = ""
+        email = ""
+        principal_name = ""
+        principal_email = ""
+        vp_names = [None] * 4
+        vp_emails = [None] * 4
 
         # Create a DataFrame and export to Excel
         df = pd.DataFrame(data, columns=["Salutation","School Name", "School Email", "Principal Name", "principal_email","VP1 Name", "VP2 Name", "VP3 Name", "VP4 Name", "VP1 Email", "VP2 Email", "VP3 Email", "VP4 Email"])
